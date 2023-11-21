@@ -1,0 +1,23 @@
+{
+  "name": "mytube",
+  "version": "1.0.0",
+  "description": "my youtube",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attckoneren/mytube-reloaded"
+  },
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
+  "author": "Seung Jun",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/node": "^7.22.19",
+    "@babel/preset-env": "^7.23.3",
+    "nodemon": "^3.0.1"
+  }
+}
