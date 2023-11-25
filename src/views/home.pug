@@ -1,0 +1,16 @@
+extends base
+include mixins/video
+
+block content 
+    div 
+        nav 
+            ul  
+                li 
+                    a(href="/search") Search Video
+                    hr
+                    a(href="/videos/upload") Upload Video 
+
+    each info in videos
+        +video(info)
+    else 
+        li Sorry noting found
