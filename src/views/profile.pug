@@ -1,0 +1,9 @@
+extends base
+include mixins/video 
+
+block content 
+    each info in user.videos
+        +video(info)
+    else 
+        li Sorry noting found
+    
