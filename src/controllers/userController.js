@@ -1,5 +1,4 @@
 import userModel from "../models/user";
-import videoModel from "../models/video";
 import bcrypt from "bcrypt";
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "Join" });
@@ -141,8 +140,6 @@ export const postEdit = async (req, res) => {
     body: { name },
     file,
   } = req;
-  const sessionUser = req.session.user;
-
   const updateUser = await userModel.findByIdAndUpdate(
     _id,
     {
@@ -165,10 +162,10 @@ export const postChangePassword = async (req, res) => {
     session: {
       user: { _id },
     },
-    body: { originalPassword, newPassword, newPassword2 },
+    body: { currentPassword, newPassword, newPassword2 },
   } = req;
   const user = await userModel.findById(_id);
-  const allGood = await bcrypt.compare(originalPassword, user.password);
+  const allGood = await bcrypt.compare(currentPassword, user.password);
   if (!allGood) {
     return res.status(400).render("change-password", {
       pageTitle: "Change Password",
