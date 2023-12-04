@@ -6,16 +6,16 @@ export const getJoin = (req, res) => {
 export const postJoin = async (req, res) => {
   const { email, password, password2, name } = req.body;
   if (password !== password2) {
+    req.flash("error", "Password confirmation does not match");
     return res.status(400).render("join", {
       pageTitle: "Join",
-      errorMessage: "Password confirmation does not match",
     });
   }
   const exists = await userModel.exists({ $or: [{ email }, { name }] });
   if (exists) {
+    req.flash("info", "This email or name is already exist");
     return res.status(400).render("join", {
       pageTitle: "Join",
-      errorMessage: "This email or name is already exist",
     });
   }
   try {
@@ -39,16 +39,16 @@ export const postLogin = async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email, socialOnly: false });
   if (!user) {
+    req.flash("error", "Email does not exist");
     return res.status(400).render("login", {
       pageTitle: "Login",
-      errorMessage: "Email does not exist",
     });
   }
   const allGood = await bcrypt.compare(password, user.password);
   if (!allGood) {
+    req.flash("error", "Wrong Password");
     return res.status(400).render("login", {
       pageTitle: "Login",
-      errorMessage: "Wrong password",
     });
   }
   req.session.loggedIn = true;
@@ -153,6 +153,7 @@ export const postEdit = async (req, res) => {
 };
 export const getChangePassword = (req, res) => {
   if (req.session.user.socialOnly === true) {
+    req.flash("error", "Password doesn't exist");
     return res.redirect("/");
   }
   return res.render("change-password", { pageTitle: "Change Password" });
@@ -167,15 +168,15 @@ export const postChangePassword = async (req, res) => {
   const user = await userModel.findById(_id);
   const allGood = await bcrypt.compare(currentPassword, user.password);
   if (!allGood) {
+    req.flash("error", "Wrong current Password");
     return res.status(400).render("change-password", {
       pageTitle: "Change Password",
-      errorMessage: "Wrong current password",
     });
   }
   if (newPassword !== newPassword2) {
+    req.flash("error", "New password does not match");
     return res.status(400).render("change-password", {
       pageTitle: "Change Password",
-      errorMessage: "New password does nat match",
     });
   }
   user.password = newPassword;
@@ -184,7 +185,13 @@ export const postChangePassword = async (req, res) => {
 };
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await userModel.findById(id).populate("videos");
+  const user = await userModel.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
   console.log(user);
   return res.render("profile", { pageTitle: user.name, user });
 };

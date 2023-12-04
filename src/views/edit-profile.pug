@@ -4,11 +4,12 @@ block content
     img(src="/"+loggedInUser.avatarUrl width=200 height=200)
     if errorMessage
         span=errorMessage
-    form(method="POST" enctype="multipart/form-data")
+    form(method="POST" enctype="multipart/form-data").edit-profile__form
         label(for="avatar") Avatar 
         input(name="avatar" type="file" id="avatar" accept="image/*")
         input(name="name" type="text" placeholder="Name" value=loggedInUser.name required)
         input(type="submit" value="edit")
     hr
     if !loggedInUser.socialOnly
-        a(href="change-password") Change Password &rarr;
+        div.edit-profile__password
+                a(href="change-password") Change Password &rarr;

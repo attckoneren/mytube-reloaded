@@ -4,10 +4,11 @@ const videoSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    maxLength: 30,
+    maxLength: 20,
     trim: true,
   },
   videoUrl: { type: String, required: true },
+  thumbnailUrl: { type: String, required: true },
   description: { type: String, required: true, minLength: 10, trim: true },
   createdAt: { type: Date, required: true, default: Date.now },
   hashtags: [{ type: String, trim: true }],
