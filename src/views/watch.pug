@@ -18,17 +18,35 @@ block content
                 input(type="range",step="0.01", value=0.5, min="0", max="1")#volume
                 span#fullScreen
                     i.fas.fa-expand
-    if String(video.owner._id) === String(loggedInUser._id)
-        a(href=`${video.id}/edit`) Edit video &rarr;
-        br
-        a(href=`${video.id}/delete`) Delete video &rarr;
-block scripts 
-    script(src="/assets/js/videoPlayer.js")
-
-    //- div 
+    hr
+    div 
         p=video.description
         small=video.createdAt
         br 
         small Uploaded by 
         a(href=`/users/${video.owner._id}`)=video.owner.name
         hr
+    if String(video.owner._id) === String(loggedInUser._id)
+        a(href=`${video.id}/edit`) Edit video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete video &rarr;
+    if loggedIn
+        div.video__comments 
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="10")#textarea
+                button Submit 
+    div.video__comments
+        ul
+            each comment in video.comments.reverse()
+                li.video__comment(data-id=comment._id)
+                    i.fas.fa-comment 
+                    span  #{comment.text}
+                    if String(loggedInUser._id) === String(comment.owner)
+                        i#commentOption.fas.fa-ellipsis-vertical
+                            div.hidden
+                                span#deleteBtn(data-id=comment.id) Clear
+                                span#editBtn = Edit
+block scripts 
+    script(src="/assets/js/videoPlayer.js")
+    if loggedIn
+        script(src="/assets/js/commentSection.js")

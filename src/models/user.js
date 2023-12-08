@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema({
       ref: "Video",
     },
   ],
+  comment: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Comment",
+    },
+  ],
 });
 
 userSchema.pre("save", async function () {
