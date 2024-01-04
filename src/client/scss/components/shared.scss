@@ -5,7 +5,9 @@
 .video-grid {
   display: grid;
   gap: 50px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 2fr));
+  position: relative;
+  left: -15px;
 }
 .auth-switch {
   text-align: center;
@@ -15,6 +17,17 @@
   }
 }
 
+.fa-face-smile {
+  font-size: 40px;
+}
+.comment__avatar {
+  height: 47px;
+  width: 47px;
+  border-radius: 50%;
+}
+.avatar-icon {
+  font-size: 140px;
+}
 .avatar {
   width: 150px;
   height: 150px;

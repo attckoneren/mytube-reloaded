@@ -1,0 +1,10 @@
+mixin video(video)
+    a(href=`/videos/${video._id}`).sideVideo-mixin
+        div.sideVideo-mixin__thumb(style=`background-image:url(${"/"+video.thumbnailUrl});background-size:cover;background-position:center;`)
+        div.sideVideo-mixin__data
+            span.sideVideo-mixin__title=video.title
+            span.sideVideo-mixin__name.grey #{video.owner.name}
+            div.sideVideo-mixin__meta
+                span.grey #{video.meta.views} views • 
+                span.grey #{video.formattedDate}
+                

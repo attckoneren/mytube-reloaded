@@ -1,52 +1,114 @@
 extends base.pug
+include mixins/sideVideo
 
 block content
-    div#videoContainer(data-id=video._id)
-        video(src="/" + video.videoUrl)
-        div#videoControls.videoControls
-            div.videoControls__play
-                span#play.videoControls__playBtn
-                    i.fas.fa-play
-                div.videoControls__time
-                    span#currentTime 00:00
-                    span  / 
-                    span#totalTime 00:00
-            input(type="range",step="1", value="0", min="0")#timeline.videoControls__timeline
-            div.videoControls__volume
-                span#mute
-                    i.fas.fa-volume-up
-                input(type="range",step="0.01", value=0.5, min="0", max="1")#volume
-                span#fullScreen
-                    i.fas.fa-expand
-    hr
-    div 
-        p=video.description
-        small=video.createdAt
-        br 
-        small Uploaded by 
-        a(href=`/users/${video.owner._id}`)=video.owner.name
-        hr
-    if String(video.owner._id) === String(loggedInUser._id)
-        a(href=`${video.id}/edit`) Edit video &rarr;
-        br
-        a(href=`${video.id}/delete`) Delete video &rarr;
-    if loggedIn
-        div.video__comments 
-            form.video__comment-form#commentForm
-                textarea(cols="30", rows="10")#textarea
-                button Submit 
-    div.video__comments
-        ul
-            each comment in video.comments.reverse()
-                li.video__comment(data-id=comment._id)
-                    i.fas.fa-comment 
-                    span  #{comment.text}
-                    if String(loggedInUser._id) === String(comment.owner)
-                        i#commentOption.fas.fa-ellipsis-vertical
-                            div.hidden
-                                span#deleteBtn(data-id=comment.id) Clear
-                                span#editBtn = Edit
-block scripts 
+    div.main__container
+        div.main__box
+            div#videoContainer(data-id=video._id)
+                video(src="/" + video.videoUrl)
+                div#videoControls.videoControls
+                    div.videoControls__play
+                        span#play.videoControls__playBtn
+                            i.fas.fa-play
+                        div.videoControls__time
+                            span#currentTime 00:00
+                            span  / 
+                            span#totalTime 00:00
+                    input(type="range",step="1", value="0", min="0")#timeline.videoControls__timeline
+                    div.videoControls__volume
+                        span#mute
+                            i.fas.fa-volume-up
+                        input(type="range",step="0.01", value=0.5, min="0", max="1")#volume
+                        span#fullScreen
+                            i.fas.fa-expand
+            div.video__info
+                h1.videoTitle=video.title
+                div.video__owner
+                    if !video.owner.avatarUrl
+                        a(href=`/users/${video.owner._id}`) 
+                            i.fa-solid.fa-face-smile.watch__avatar
+                    else
+                        a(href=`/users/${video.owner._id}`) 
+                            img(src="/"+video.owner.avatarUrl).ownerAvatar
+                    div.ownerInfo(data-id=video.owner._id)
+                        a(href=`/users/${video.owner._id}`) 
+                            span.ownerName=video.owner.name
+                        span.ownerSubs #{video.owner.subscriber.length} #{video.owner.subscriber.length === 0 || video.owner.subscriber.length === 1 ? "subscriber" : "subscribers"}
+                    if String(video.owner._id) === String(loggedInUser._id)
+                        div.videoEditBtn
+                            a(href=`${video.id}/edit`).videoEdit Edit video
+                        div.videoDeleteBtn
+                            a(href=`${video.id}/delete`).videoDelete Delete video 
+                    if String(video.owner._id)!==String(loggedInUser._id)
+                        div.subsBtn(class=video.owner.subscriber.includes(loggedInUser._id) ? "subs" : "")
+                            if video.owner.subscriber.includes(loggedInUser._id)
+                                span.subsBtnText Unsubscribe 
+                            else 
+                                span.subsBtnText Subscribe 
+                    div#likeContainer
+                        if video.meta.likes.includes(loggedInUser._id)
+                            i.fas.fa-thumbs-up#likeBtn
+                        else 
+                            i.far.fa-thumbs-up#likeBtn
+                        span#likeCount #{video.meta.likes.length}
+                div.video__subInfo
+                    div.metaInfo
+                        span.views #{video.meta.views} views
+                        span.createdAt=formattedDate
+                        span.hashtags=video.hashtags
+                    p.description=video.description
+                    br 
+                div.video__comments
+                    h2 #{video.comments.length}#{video.comments.length===0 || video.comments.length===1 ? "comment":"comments"}
+                    form.video__comment-form#commentForm
+                        if !loggedInUser.avatarUrl
+                            i.fa-solid.fa-face-smile.watch__avatar
+                        else
+                            img(src="/"+loggedInUser.avatarUrl).comment__avatar
+                        textarea(placeholder="Add comment...",rows="1")
+                        button#addCommentBtn Comment
+                    ul
+                        each comment in video.comments.reverse()
+                            li.video__comment(data-id=comment._id)
+                                if !comment.avatarUrl
+                                    a(href=`/users/${comment.owner}`) 
+                                        i.fa-solid.fa-face-smile.avatar-icon
+                                else 
+                                    a(href=`/users/${comment.owner}`)
+                                        img(src="/"+comment.avatarUrl).comment__avatar
+                                    div.hidden.editModal
+                                        form.editCommentForm
+                                                textarea(rows="1").editCommentArea=comment.text
+                                                button.saveEditBtn Edit
+                                                button.cancelEditBtn Cancel
+                                div.comment__content
+                                    a(href=`/users/${comment.owner}`).commentUsername=comment.name
+                                    span.commentText  #{comment.text}
+                                    div.comment__like
+                                            if comment.likes.includes(loggedInUser._id)
+                                                i.fas.fa-thumbs-up.likeCommentBtn
+                                            else
+                                                i.far.fa-thumbs-up.likeCommentBtn
+                                            span.likeCommentCount #{comment.likes.length}
+                                if String(loggedInUser._id) === String(comment.owner)
+                                    i.commentOption.fas.fa-ellipsis-vertical
+                                        div.hidden.option
+                                            div.editBtn 
+                                                i.fas.fa-pen 
+                                                span Edit
+                                            div.deleteBtn(data-id=comment.id) 
+                                                i.fas.fa-trash
+                                                span Delete 
+        if loggedIn 
+            div.loggedInBox                                 
+        div.video__sideList 
+            each video in videos 
+                if String(video.owner._id) !== String(loggedInUser._id) && String(id) !== String(video._id)
+                    +video(video)
+block scripts  
     script(src="/assets/js/videoPlayer.js")
     if loggedIn
         script(src="/assets/js/commentSection.js")
+    if String(loggedInUser._id) !== String(video.owner._id) && loggedIn
+        script(src="/assets/js/subscription.js")
+        

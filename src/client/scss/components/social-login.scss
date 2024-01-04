@@ -5,5 +5,14 @@
   .social__btn--github {
     background-color: transparent;
     color: azure;
+    width: 400px;
+    margin: 0 auto;
   }
+}
+.link {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }

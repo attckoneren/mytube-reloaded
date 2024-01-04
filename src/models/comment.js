@@ -12,6 +12,9 @@ const commentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Video",
   },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  avatarUrl: { type: String, ref: "User" },
+  name: { type: String, required: true },
 });
 
 const commentModel = mongoose.model("Comment", commentSchema);

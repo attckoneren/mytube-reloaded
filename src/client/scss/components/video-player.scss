@@ -1,9 +1,12 @@
 #videoContainer {
-  width: 100%;
+  width: 950px;
+  height: 535px;
   position: relative;
 
   video {
     width: 100%;
+    height: 100%;
+    border-radius: 10px;
   }
   .videoControls {
     opacity: 0;
@@ -12,10 +15,10 @@
       opacity: 1;
     }
     align-items: center;
-    border-radius: 10px;
+    border-radius: 15px;
     position: absolute;
     bottom: 10px;
-    width: 95%;
+    width: 100%;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -25,7 +28,7 @@
     gap: 10px;
     justify-content: space-between;
     background-color: rgba(0, 0, 0, 0);
-    padding: 10px;
+    padding: 10px 25px;
     left: 0;
     box-sizing: border-box;
     .videoControls__play {
@@ -36,7 +39,7 @@
         margin: 0px 15px;
         i {
           cursor: pointer;
-          font-size: 25px;
+          font-size: 20px;
         }
       }
       .videoControls__time {
@@ -44,20 +47,31 @@
       }
     }
     .videoControls__timeline {
+      height: 5px;
       color: gray;
       cursor: pointer;
       position: absolute;
-      top: -20px;
-      width: 100%;
-      background: grey;
+      top: -10px;
+      left: 17px;
+      width: 96.5%;
+      accent-color: $red;
+      &:focus {
+        outline: none;
+      }
     }
     .videoControls__volume {
       display: flex;
       align-items: center;
 
       input {
+        height: 5px;
+        border-radius: 15px;
         cursor: pointer;
         margin-right: 15px;
+        accent-color: $red;
+        &:focus {
+          outline: none;
+        }
       }
       span {
         margin-right: 10px;

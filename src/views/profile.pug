@@ -2,16 +2,33 @@ extends base
 include mixins/video 
 
 block content 
-    div.profile__data
-        if !loggedInUser.avatarUrl
-            i.fa-solid.fa-face-smile.fa-8x
-            h3=user.name
+    div.profile__data(data-id=user._id)
+        if !user.avatarUrl
+            i.fa-solid.fa-face-smile.avatar-icon
         else 
             img(src="/" + user.avatarUrl).avatar
+        div.profile__info
             h3=user.name
+            div.userInfo
+                span.ownerSubs #{user.subscriber.length} #{user.subscriber.length === 0 || user.subscriber.length === 1 ? "subscriber" : "subscribers"}  
+                span.videoLength  • #{user.videos.length} #{user.videos.length === 0 || user.videos.length === 1 ? "video" : "videos"}
+            if String(user._id)!==String(loggedInUser._id)
+                div.subsBtn(class=user.subscriber.includes(loggedInUser._id) ? "subs" : "")
+                    if user.subscriber.includes(loggedInUser._id)
+                        span.subsBtnText Unsubscribe 
+                    else 
+                        span.subsBtnText Subscribe 
+            if String(user._id)===String(loggedInUser._id)
+                a(href="/users/edit") 
+                    div.goEditBtn 
+                        span Edit profile
+
     div.video-grid
-        each video in user.videos
+        each video in videos
             +video(video)
         else
             span.empty__message No videos found 
+block scripts  
+    if String(loggedInUser._id) !== String(user._id)
+        script(src="/assets/js/subscription.js")
     

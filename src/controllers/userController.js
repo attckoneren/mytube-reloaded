@@ -1,4 +1,6 @@
 import userModel from "../models/user";
+import videoModel from "../models/video";
+import commentModel from "../models/comment";
 import bcrypt from "bcrypt";
 export const getJoin = (req, res) => {
   return res.render("join", { pageTitle: "Join" });
@@ -11,9 +13,9 @@ export const postJoin = async (req, res) => {
       pageTitle: "Join",
     });
   }
-  const exists = await userModel.exists({ $or: [{ email }, { name }] });
+  const exists = await userModel.exists({ email });
   if (exists) {
-    req.flash("info", "This email or name is already exist");
+    req.flash("error", "This email is already exist");
     return res.status(400).render("join", {
       pageTitle: "Join",
     });
@@ -109,7 +111,6 @@ export const finalGithubLogin = async (req, res) => {
     let user = await userModel.findOne({ email: emailObj.email });
     if (!user) {
       user = await userModel.create({
-        avatarUrl: userData.avatar_url,
         email: emailObj.email,
         socialOnly: true,
         password: "",
@@ -149,8 +150,18 @@ export const postEdit = async (req, res) => {
     { new: true }
   );
   req.session.user = updateUser;
+
+  await commentModel.updateMany(
+    { owner: _id },
+    {
+      avatarUrl: file ? file.path : avatarUrl,
+      name,
+    },
+    { new: true }
+  );
   return res.redirect("/users/edit");
 };
+
 export const getChangePassword = (req, res) => {
   if (req.session.user.socialOnly === true) {
     req.flash("error", "Password doesn't exist");
@@ -192,6 +203,52 @@ export const see = async (req, res) => {
       model: "User",
     },
   });
-  console.log(user);
-  return res.render("profile", { pageTitle: user.name, user });
+  if (!user) {
+    return res.sendStatus(404);
+  }
+  const videos = await videoModel.find({ owner: id });
+  const formattedDates = await Promise.all(
+    videos.map(async (video) => ({
+      ...video.toObject(),
+      formattedDate: await videoModel.formatDate(video.createdAt),
+    }))
+  );
+  return res.render("profile", {
+    pageTitle: user.name,
+    user,
+    videos: formattedDates,
+  });
+};
+
+export const subsApi = async (req, res) => {
+  const { id } = req.params;
+  const { _id } = req.session.user;
+  let subsCount;
+  const user = await userModel.findById(id);
+  if (!user) {
+    return res.sendStatus(404);
+  }
+  const sessionUser = await userModel.findById(_id);
+  if (!sessionUser) {
+    return res.sendStatus(404);
+  }
+  if (String(user) === String(sessionUser)) {
+    return res.sendStatus(404);
+  }
+  const existingSubs = user.subscriber.includes(_id);
+  if (existingSubs) {
+    user.subscriber.remove(_id);
+    await user.save();
+    sessionUser.SubscriptionList.remove(id);
+    await sessionUser.save();
+    subsCount = user.subscriber.length;
+    return res.status(200).json({ subsCount });
+  }
+  user.subscriber.push(_id);
+  await user.save();
+  sessionUser.SubscriptionList.push(id);
+  await sessionUser.save();
+  subsCount = user.subscriber.length;
+  const isSubscribed = sessionUser.SubscriptionList.includes(id);
+  return res.status(200).json({ subsCount, isSubscribed });
 };

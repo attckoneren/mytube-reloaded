@@ -32,3 +32,8 @@ export const uploadFileMiddleware = multer({
   },
 });
 export const uploadVideoMiddleware = multer({ dest: "uploads/videos" });
+
+export const deleteSuccess = (req, res, next) => {
+  req.flash("success", "Done deleting comments");
+  next();
+};

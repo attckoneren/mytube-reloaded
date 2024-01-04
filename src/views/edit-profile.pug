@@ -1,7 +1,11 @@
 extends base
 
 block content
-    img(src="/"+loggedInUser.avatarUrl width=200 height=200)
+    div.avatar__container
+        if !loggedInUser.avatarUrl
+            i.fa-solid.fa-face-smile.edit__avatar-icon
+        else 
+            img(src="/" + loggedInUser.avatarUrl).edit__avatar
     if errorMessage
         span=errorMessage
     form(method="POST" enctype="multipart/form-data").edit-profile__form

@@ -1,4 +1,19 @@
+.avatar__container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  .edit__avatar-icon {
+    font-size: 200px;
+  }
+  .edit__avatar {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+  }
+}
 form {
+  margin-bottom: 20px;
   label {
     font-size: 14px;
     margin-bottom: 10px;

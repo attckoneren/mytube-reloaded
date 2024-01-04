@@ -12,14 +12,22 @@ const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
 
+const videoEditBtn = document.querySelector(".videoEditBtn");
+const videoDeleteBtn = document.querySelector(".videoDeleteBtn");
+const likeContainer = document.getElementById("likeContainer");
+const likeBtn = document.getElementById("likeBtn");
+
 const textarea = document.getElementById("textarea");
+const editCommentArea = document.querySelector(".editCommentArea");
+
+const loggedInBox = document.querySelector(".loggedInBox");
 
 let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
-const playPause = (e) => {
+const playPause = () => {
   if (video.paused) {
     video.play();
   } else {
@@ -28,18 +36,22 @@ const playPause = (e) => {
   playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
 };
 
-const handlePlayClick = (e) => {
+const handlePlayClick = () => {
   playPause();
 };
 const spacePlayPause = (e) => {
-  if (e.keyCode === 32 && e.target !== textarea) {
+  if (
+    e.keyCode === 32 &&
+    e.target !== textarea &&
+    e.target !== editCommentArea
+  ) {
     playPause();
   }
 };
-const handleClickVideo = (e) => {
+const handleClickVideo = () => {
   playPause();
 };
-const handleMuteClick = (e) => {
+const handleMuteClick = () => {
   if (video.muted) {
     video.muted = false;
   } else {
@@ -123,6 +135,45 @@ const handelEnded = () => {
     method: "POST",
   });
 };
+const likeCounting = (likesCount) => {
+  const likeCount = document.getElementById("likeCount");
+  likeCount.innerText = `${likesCount}`;
+  const likeBtn = document.getElementById("likeBtn");
+  if (likeBtn.classList.contains("fas")) {
+    likeBtn.className = "far fa-thumbs-up likeCommentBtn";
+  } else {
+    likeBtn.className = "fas fa-thumbs-up likeCommentBtn";
+  }
+};
+
+const handleLike = async () => {
+  try {
+    const { id } = videoContainer.dataset;
+    const response = await fetch(`/api/videos/${id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200) {
+      const { likesCount } = await response.json();
+      likeCounting(likesCount);
+    } else {
+      console.error("Failed to update likes. Server returned an error.");
+    }
+  } catch (error) {
+    console.error("An error occurred during the like operation:", error);
+  }
+};
+
+const clickEditBtn = () => {
+  const a = videoEditBtn.querySelector("a");
+  a.click();
+};
+const clickDeleteBtn = () => {
+  const a = videoDeleteBtn.querySelector("a");
+  a.click();
+};
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
@@ -136,3 +187,12 @@ videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 timeline.addEventListener("input", handleTimelineChange);
 fullScreenBtn.addEventListener("click", handleFullscreen);
+if (loggedInBox) {
+  likeContainer.addEventListener("click", handleLike);
+}
+if (videoEditBtn) {
+  videoEditBtn.addEventListener("click", clickEditBtn);
+}
+if (videoDeleteBtn) {
+  videoDeleteBtn.addEventListener("click", clickDeleteBtn);
+}
