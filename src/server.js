@@ -10,6 +10,7 @@ import { localsMiddleware } from "./middlewares";
 import apiRouter from "./routers/apiRouter";
 
 const app = express();
+
 const logger = morgan("dev");
 
 app.set("view engine", "pug");
