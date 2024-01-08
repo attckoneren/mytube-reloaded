@@ -10,4 +10,4 @@ const handleServer = () =>
   console.log(
     `server listening on port http://localhost:${process.env.PORT} ✅`
   );
-app.listen(PORT, handleServer);
+app.listen(process.env.PORT, handleServer);
