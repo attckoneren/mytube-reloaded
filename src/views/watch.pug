@@ -58,53 +58,55 @@ block content
                         span.hashtags=video.hashtags
                     p.description=video.description
                     br 
-                div.video__comments
-                    h2 #{video.comments.length}#{video.comments.length===0 || video.comments.length===1 ? "comment":"comments"}
-                    form.video__comment-form#commentForm
-                        if !loggedInUser.avatarUrl
-                            i.fa-solid.fa-face-smile.watch__avatar
-                        else
-                            img(src="/"+loggedInUser.avatarUrl).comment__avatar
-                        textarea(placeholder="Add comment...",rows="1")
-                        button#addCommentBtn Comment
-                    ul
-                        each comment in video.comments.reverse()
-                            li.video__comment(data-id=comment._id)
-                                if !comment.avatarUrl
-                                    a(href=`/users/${comment.owner}`) 
-                                        i.fa-solid.fa-face-smile.avatar-icon
-                                else 
-                                    a(href=`/users/${comment.owner}`)
-                                        img(src="/"+comment.avatarUrl).comment__avatar
-                                    div.hidden.editModal
-                                        form.editCommentForm
-                                                textarea(rows="1").editCommentArea=comment.text
-                                                button.saveEditBtn Edit
-                                                button.cancelEditBtn Cancel
-                                div.comment__content
-                                    a(href=`/users/${comment.owner}`).commentUsername=comment.name
-                                    span.commentText  #{comment.text}
-                                    div.comment__like
-                                            if comment.likes.includes(loggedInUser._id)
-                                                i.fas.fa-thumbs-up.likeCommentBtn
-                                            else
-                                                i.far.fa-thumbs-up.likeCommentBtn
-                                            span.likeCommentCount #{comment.likes.length}
-                                if String(loggedInUser._id) === String(comment.owner)
-                                    i.commentOption.fas.fa-ellipsis-vertical
-                                        div.hidden.option
-                                            div.editBtn 
-                                                i.fas.fa-pen 
-                                                span Edit
-                                            div.deleteBtn(data-id=comment.id) 
-                                                i.fas.fa-trash
-                                                span Delete 
+            div.video__comments
+                h2 #{video.comments.length}#{video.comments.length===0 || video.comments.length===1 ? "comment":"comments"}
+                form.video__comment-form#commentForm
+                    if !loggedInUser.avatarUrl
+                        i.fa-solid.fa-face-smile.watch__avatar
+                    else
+                        img(src="/"+loggedInUser.avatarUrl).comment__avatar
+                    textarea(placeholder="Add comment...",rows="1")
+                    button#addCommentBtn Comment
+                ul
+                    each comment in video.comments.reverse()
+                        li.video__comment(data-id=comment._id)
+                            if !comment.avatarUrl
+                                a(href=`/users/${comment.owner}`) 
+                                    i.fa-solid.fa-face-smile
+                            else 
+                                a(href=`/users/${comment.owner}`)
+                                    img(src="/"+comment.avatarUrl).comment__avatar
+                            div.hidden.editModal
+                                form.editCommentForm
+                                        textarea(rows="1").editCommentArea=comment.text
+                                        button.saveEditBtn Edit
+                                        button.cancelEditBtn Cancel
+                            div.comment__content
+                                a(href=`/users/${comment.owner}`).commentUsername=comment.name
+                                span.commentText  #{comment.text}
+                                div.comment__like
+                                        if comment.likes.includes(loggedInUser._id)
+                                            i.fas.fa-thumbs-up.likeCommentBtn
+                                        else
+                                            i.far.fa-thumbs-up.likeCommentBtn
+                                        span.likeCommentCount #{comment.likes.length}
+                            if String(loggedInUser._id) === String(comment.owner)
+                                i.commentOption.fas.fa-ellipsis-vertical
+                                    div.hidden.option
+                                        div.editBtn 
+                                            i.fas.fa-pen 
+                                            span Edit
+                                        div.deleteBtn(data-id=comment.id) 
+                                            i.fas.fa-trash
+                                            span Delete 
         if loggedIn 
             div.loggedInBox                                 
         div.video__sideList 
             each video in videos 
                 if String(video.owner._id) !== String(loggedInUser._id) && String(id) !== String(video._id)
                     +video(video)
+            else
+                span.empty__message No videos found
 block scripts  
     script(src="/assets/js/videoPlayer.js")
     if loggedIn
