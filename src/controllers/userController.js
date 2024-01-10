@@ -145,7 +145,7 @@ export const postEdit = async (req, res) => {
     _id,
     {
       name,
-      avatarUrl: file ? file.path : avatarUrl,
+      avatarUrl: file ? file.location : avatarUrl,
     },
     { new: true }
   );
@@ -154,7 +154,7 @@ export const postEdit = async (req, res) => {
   await commentModel.updateMany(
     { owner: _id },
     {
-      avatarUrl: file ? file.path : avatarUrl,
+      avatarUrl: file ? file.location : avatarUrl,
       name,
     },
     { new: true }

@@ -37,7 +37,7 @@ const addComment = async (text, id) => {
     avatar.appendChild(smileIcon);
   } else {
     const avatarImage = document.createElement("img");
-    avatarImage.src = `/${comment.avatarUrl}`;
+    avatarImage.src = `${comment.avatarUrl}`;
     avatarImage.className = "comment__avatar";
     avatar.appendChild(avatarImage);
   }

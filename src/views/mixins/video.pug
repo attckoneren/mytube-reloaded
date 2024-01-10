@@ -6,7 +6,7 @@ mixin video(video)
                 if !video.owner.avatarUrl
                     i.fa-solid.fa-face-smile
                 else
-                    img(src="/"+video.owner.avatarUrl).homeVideoAvatar 
+                    img(src=video.owner.avatarUrl).homeVideoAvatar 
             div.video-mixin__data
                 span.video-mixin__title=video.title
                 div 
