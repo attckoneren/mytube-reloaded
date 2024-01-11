@@ -12,14 +12,20 @@ const s3 = new S3Client({
 
 const s3ImageUploader = multerS3({
   s3: s3,
-  bucket: "mytubee/images",
+  bucket: "mytubee",
   acl: "public-read",
+  key: function (req, file, cb) {
+    cb(null, "images/" + file.originalname);
+  },
 });
 
 const s3VideoUploader = multerS3({
   s3: s3,
-  bucket: "mytubee/videos",
+  bucket: "mytubee",
   acl: "public-read",
+  key: function (req, file, cb) {
+    cb(null, "videos/" + file.originalname);
+  },
 });
 
 const isRender = process.env.NODE_ENV === "production";
