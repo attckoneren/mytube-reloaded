@@ -141,11 +141,12 @@ export const postEdit = async (req, res) => {
     body: { name },
     file,
   } = req;
+  const isRender = process.env.NODE_ENV === "production";
   const updateUser = await userModel.findByIdAndUpdate(
     _id,
     {
       name,
-      avatarUrl: file ? file.location : avatarUrl,
+      avatarUrl: file ? (isRender ? file.location : file.path) : avatarUrl,
     },
     { new: true }
   );

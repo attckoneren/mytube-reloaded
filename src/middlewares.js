@@ -10,16 +10,25 @@ const s3 = new S3Client({
   },
 });
 
-const multerUploader = multerS3({
+const s3ImageUploader = multerS3({
   s3: s3,
-  bucket: "mytubee",
+  bucket: "mytubee/images",
   acl: "public-read",
 });
+
+const s3VideoUploader = multerS3({
+  s3: s3,
+  bucket: "mytubee/videos",
+  acl: "public-read",
+});
+
+const isRender = process.env.NODE_ENV === "production";
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.siteName = "Mytube";
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.loggedInUser = req.session.user || {};
+  res.locals.isRender = isRender;
   next();
 };
 
@@ -46,14 +55,14 @@ export const uploadFileMiddleware = multer({
   limits: {
     fileSize: 3000000,
   },
-  storage: multerUploader,
+  storage: isRender ? s3ImageUploader : undefined,
 });
 export const uploadVideoMiddleware = multer({
   dest: "uploads/videos",
   limits: {
-    fileSize: 100000000,
+    fileSize: 10000000,
   },
-  storage: multerUploader,
+  storage: isRender ? s3VideoUploader : undefined,
 });
 
 export const deleteSuccess = (req, res, next) => {
