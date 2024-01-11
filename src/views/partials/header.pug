@@ -22,7 +22,7 @@ header
                         if !loggedInUser.avatarUrl
                             i.fa-solid.fa-face-smile
                         else 
-                            img(src=loggedInUser.avatarUrl).header__avatar
+                            img(src=`${isRender ? loggedInUser.avatarUrl : "/"+loggedInUser.avatarUrl}`).header__avatar
             else                        
                 li
                     a(href="/login")
