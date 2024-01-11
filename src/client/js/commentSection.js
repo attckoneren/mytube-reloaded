@@ -31,13 +31,16 @@ const addComment = async (text, id) => {
   newComment.dataset.id = id;
   const avatar = document.createElement("a");
   avatar.href = `/users/${comment.owner}`;
+  const isRender = process.env.NODE_ENV === "production";
   if (!comment.avatarUrl) {
     const smileIcon = document.createElement("i");
     smileIcon.className = "fa-solid fa-face-smile";
     avatar.appendChild(smileIcon);
   } else {
     const avatarImage = document.createElement("img");
-    avatarImage.src = `${comment.avatarUrl}`;
+    avatarImage.src = `${
+      isRender ? comment.avatarUrl : "/" + comment.avatarUrl
+    }`;
     avatarImage.className = "comment__avatar";
     avatar.appendChild(avatarImage);
   }
