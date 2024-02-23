@@ -45,12 +45,16 @@ block content
                                 span.subsBtnText Unsubscribe 
                             else 
                                 span.subsBtnText Subscribe 
+                            if !loggedIn
+                                div.login-info Please Login
                     div#likeContainer
                         if video.meta.likes.includes(loggedInUser._id)
                             i.fas.fa-thumbs-up#likeBtn
                         else 
                             i.far.fa-thumbs-up#likeBtn
                         span#likeCount #{video.meta.likes.length}
+                        if !loggedIn
+                            div.login-info Please Login
                 div.video__subInfo
                     div.metaInfo
                         span.views #{video.meta.views} views

@@ -31,11 +31,28 @@
       font-size: 13px;
       background-color: #f1f1f1;
       color: black;
-
       border: none;
       cursor: pointer;
       &:hover {
         opacity: 0.9;
+        .login-info {
+          opacity: 1;
+        }
+      }
+      .login-info {
+        height: 30px;
+        width: 110px;
+        border-radius: 15px;
+        background-color: tomato;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        position: absolute;
+        bottom: -30px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
       }
     }
     .subs {

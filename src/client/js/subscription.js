@@ -3,7 +3,7 @@ const subsBtn = document.querySelector(".subsBtn");
 const subsBtnText = document.querySelector(".subsBtnText");
 
 const profileSubsBtn = document.querySelector(".profileSubsBtn");
-const profileData = document.querySelector(".profile__data");
+const profileData = document.querySelector(".exist-user");
 
 const subsCounting = async (subsCount) => {
   const ownerSubs = document.querySelector(".ownerSubs");
@@ -32,6 +32,9 @@ const handelVideoSubs = async () => {
     }
   }
 };
+if (ownerInfo) {
+  subsBtn.addEventListener("click", handelVideoSubs);
+}
 
 const handelProfileSubs = async () => {
   const { id } = profileData.dataset;
@@ -53,9 +56,6 @@ const handelProfileSubs = async () => {
     }
   }
 };
-if (ownerInfo) {
-  subsBtn.addEventListener("click", handelVideoSubs);
-}
 if (profileData) {
   subsBtn.addEventListener("click", handelProfileSubs);
 }

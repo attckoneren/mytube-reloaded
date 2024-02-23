@@ -21,11 +21,13 @@ export const postJoin = async (req, res) => {
     });
   }
   try {
+    console.log(password);
     await userModel.create({
       email,
       password,
       name,
     });
+    console.log(password);
     return res.redirect("/login");
   } catch (error) {
     return res.status(400).render("join", {
@@ -229,10 +231,8 @@ export const subsApi = async (req, res) => {
   if (!user) {
     return res.sendStatus(404);
   }
+
   const sessionUser = await userModel.findById(_id);
-  if (!sessionUser) {
-    return res.sendStatus(404);
-  }
   if (String(user) === String(sessionUser)) {
     return res.sendStatus(404);
   }

@@ -1,8 +1,10 @@
 extends base
 include mixins/video 
 
-block content 
-    div.profile__data(data-id=user._id)
+block content
+    if loggedIn
+        div.exist-user(data-id=user._id)
+    div.profile__data
         if !user.avatarUrl
             i.fa-solid.fa-face-smile.avatar-icon
         else 
@@ -18,6 +20,8 @@ block content
                         span.subsBtnText Unsubscribe 
                     else 
                         span.subsBtnText Subscribe 
+                    if !loggedIn
+                        div.login-info Please Login
             if String(user._id)===String(loggedInUser._id)
                 a(href="/users/edit") 
                     div.goEditBtn 
